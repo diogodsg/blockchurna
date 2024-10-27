@@ -25,8 +25,9 @@ type P2PNode struct {
 	Topic *pubsub.Topic
 }
 
-func NewP2PNode(ctx context.Context, listenAddr multiaddr.Multiaddr) (*P2PNode, error) {
-    h, err := libp2p.New(libp2p.ListenAddrs(listenAddr))
+func NewP2PNode(ctx context.Context, listenAddr multiaddr.Multiaddr, listenport string) (*P2PNode, error) {
+	priv := GetNodeKey(listenport)
+    h, err := libp2p.New(libp2p.Identity(priv), libp2p.ListenAddrs(listenAddr))
     if err != nil {
         return nil, fmt.Errorf("failed to create libp2p host: %w", err)
     }
@@ -114,13 +115,13 @@ func ConnectToNetwork() *P2PNode {
 
     listenPort := os.Args[1]
 
-    listenAddrStr := fmt.Sprintf("/ip4/127.0.0.1/tcp/%s", listenPort)
+    listenAddrStr := fmt.Sprintf("/ip4/0.0.0.0/tcp/%s", listenPort)
     listenAddr, err := multiaddr.NewMultiaddr(listenAddrStr)
     if err != nil {
         log.Fatalf("Failed to create multiaddress: %v", err)
     }
 
-    node, err := NewP2PNode(ctx, listenAddr) 
+    node, err := NewP2PNode(ctx, listenAddr, listenPort) 
     if err != nil {
         log.Fatal(err)
     }
