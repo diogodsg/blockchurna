@@ -11,15 +11,17 @@ import (
 	"github.com/mitchellh/mapstructure"
 )
 
+var Node *P2PNode
+
 func BroadcastBlock(h host.Host, block *blockchain.Block) error {
 	data, err := SerializeBlock(block)
 
 	if err != nil {
 		return fmt.Errorf("failed to serialize block: %v", err)
 	}
-
+	fmt.Println(h.Network().Peers())
 	for _, peer := range h.Network().Peers() {
-		fmt.Println("Broadcasting block")
+		fmt.Printf("Broadcasting block to %s\n", peer)
 		stream, err := h.NewStream(context.Background(), peer, "/blockchain/1.0.0")
 
 		if err != nil {
@@ -124,10 +126,10 @@ func SynchronizeChain(h host.Host, bc *blockchain.Blockchain) error {
 
 func StartBlockchain() {
 	block := blockchain.BC.AddBlock("new item")
-	p2pNode := ConnectToNetwork() 
+	Node = ConnectToNetwork() 
 	// p2p.SynchronizeChain(p2pNode.Host, bc)
-	BroadcastBlock(p2pNode.Host, block)
-	StartListening(p2pNode.Host, blockchain.BC)
+	BroadcastBlock(Node.Host, block)
+	StartListening(Node.Host, blockchain.BC)
 
 	for _, block := range blockchain.BC.Blocks {
 		fmt.Printf("Index: %d, Payload: %s, Hash: %s\n", block.Index, block.Payload, block.Id)

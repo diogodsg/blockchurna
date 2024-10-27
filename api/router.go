@@ -2,6 +2,7 @@ package api
 
 import (
 	"blockchurna/blockchain"
+	"blockchurna/p2p"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -28,7 +29,7 @@ func AddBlock(c *gin.Context) {
 	}
 
 	createdBlock := blockchain.BC.AddBlock(createBlockDto.Payload)
-
+	p2p.BroadcastBlock(p2p.Node.Host, createdBlock)
 	c.JSON(200, gin.H{
 		"block":createdBlock,
 	})

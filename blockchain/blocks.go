@@ -22,7 +22,6 @@ func NewBlock(index int, payload string, previousNode string) *Block {
 		PreviousNode: previousNode,
 	}
 	block.Id = block.calculateHash()
-
 	return block
 }
 

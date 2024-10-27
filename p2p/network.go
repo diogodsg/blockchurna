@@ -1,21 +1,18 @@
 package p2p
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"log"
 	"os"
 
-	"github.com/libp2p/go-libp2p" // Core libp2p library
+	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/multiformats/go-multiaddr"
 
-	// Network interface
-	// Peer management
-	// Connection manager
-	pubsub "github.com/libp2p/go-libp2p-pubsub" // PubSub for gossiping messages
-	// Multiaddr for peer addresses
+	pubsub "github.com/libp2p/go-libp2p-pubsub"
 )
 
 
@@ -128,16 +125,33 @@ func ConnectToNetwork() *P2PNode {
 
     fmt.Printf("Node is listening on: %s/p2p/%s\n", listenAddrStr, node.Host.ID().String())
 
-    if len(os.Args) > 2 {
-        peerAddr := os.Args[2]
-        fmt.Printf("Connecting to peer: %s\n", peerAddr)
-
-        if err := node.ConnectToPeer(ctx, peerAddr); err != nil {
-            log.Fatalf("Failed to connect to peer: %v", err)
-        }
-
-        fmt.Println("Successfully connected to peer!")
-    }
+	ConnectToSeedNodes(ctx, node)
 
     return node
+}
+
+func ConnectToSeedNodes(ctx context.Context, node *P2PNode) {
+	file, err := os.Open("seed_nodes")
+	if err != nil {
+		log.Printf("Error opening the file:", err)
+		return
+	}
+	defer file.Close() 
+
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		peerAddr := scanner.Text() 
+		log.Printf("Connecting to peer: %s\n", peerAddr)
+
+        if err := node.ConnectToPeer(ctx, peerAddr); err != nil {
+            log.Printf("Failed to connect to peer: %v", err)
+        }
+
+        log.Printf("Successfully connected to peer: %s\n", peerAddr)
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Printf("Error reading lines: %v", err)
+	}
 }
