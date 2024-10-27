@@ -1,3 +1,3 @@
 to start a project
 
-go run main.go <port>
+go run main.go 4001
