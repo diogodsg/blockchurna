@@ -6,11 +6,9 @@ import (
 )
 
 const (
-	MessageTypeBlock = "BLOCK"
-	MessageTypeTransaction = "TRANSACTION"
-	MessageRequestLatestBlock = "REQUEST_LATEST_BLOCK"
-	MessageRequestMissingBlocks = "REQUEST_MISSING_BLOCKS"
-	MessageTypeBlocks = "TYPE_BLOCKS"
+	MessageLatestBlock = "LATEST_BLOCK"
+	MessageRequestBlockchain = "REQUEST_BLOCKCHAIN"
+	MessageSyncronize = "SYNCRONIZE_CHAIN"
 )
 
 type Message struct {
@@ -20,7 +18,7 @@ type Message struct {
 
 func SerializeBlock(block *blockchain.Block) ([]byte, error) {
 	message := Message{
-		Type: MessageTypeBlock,
+		Type: MessageLatestBlock,
 		Payload: block,
 	}
 
