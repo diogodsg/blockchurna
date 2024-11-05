@@ -28,9 +28,16 @@ func AddBlock(c *gin.Context) {
 		return
 	}
 
-	createdBlock := blockchain.BC.AddBlock(createBlockDto.Payload)
+	createdBlock := blockchain.BC.CreateBlock(createBlockDto.Payload)
 	p2p.BroadcastBlock(p2p.Node.Host, createdBlock)
 	c.JSON(200, gin.H{
 		"block":createdBlock,
+	})
+}
+
+func Synchronize(c *gin.Context) {
+	p2p.SynchronizeChain(p2p.Node.Host,blockchain.BC)
+	c.JSON(200, gin.H{
+		"block":"createdBlock",
 	})
 }

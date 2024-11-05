@@ -22,6 +22,8 @@ type P2PNode struct {
 	Topic *pubsub.Topic
 }
 
+
+
 func NewP2PNode(ctx context.Context, listenAddr multiaddr.Multiaddr, listenport string) (*P2PNode, error) {
 	priv := GetNodeKey(listenport)
     h, err := libp2p.New(libp2p.Identity(priv), libp2p.ListenAddrs(listenAddr))
@@ -103,8 +105,7 @@ func (node *P2PNode) ListenMessages(ctx context.Context, handler func([]byte)) e
 
 
 func ConnectToNetwork() *P2PNode {
-    ctx := context.Background()
-
+	ctx := context.Background()
     if len(os.Args) < 2 {
         fmt.Println("Usage: go run main.go <port> [<peer-multiaddr>]")
         return nil
@@ -142,10 +143,11 @@ func ConnectToSeedNodes(ctx context.Context, node *P2PNode) {
 
 	for scanner.Scan() {
 		peerAddr := scanner.Text() 
-		log.Printf("Connecting to peer: %s\n", peerAddr)
+		log.Printf("Connecting to peer: (%s)\n", peerAddr)
 
         if err := node.ConnectToPeer(ctx, peerAddr); err != nil {
-            log.Printf("Failed to connect to peer: %v", err)
+            log.Printf("Failed to connect to peer: (%v)", err)
+			continue
         }
 
         log.Printf("Successfully connected to peer: %s\n", peerAddr)
@@ -155,3 +157,5 @@ func ConnectToSeedNodes(ctx context.Context, node *P2PNode) {
 		log.Printf("Error reading lines: %v", err)
 	}
 }
+
+

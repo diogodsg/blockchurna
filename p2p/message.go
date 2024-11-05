@@ -9,6 +9,8 @@ const (
 	MessageTypeBlock = "BLOCK"
 	MessageTypeTransaction = "TRANSACTION"
 	MessageRequestLatestBlock = "REQUEST_LATEST_BLOCK"
+	MessageRequestMissingBlocks = "REQUEST_MISSING_BLOCKS"
+	MessageTypeBlocks = "TYPE_BLOCKS"
 )
 
 type Message struct {

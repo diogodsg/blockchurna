@@ -22,12 +22,33 @@ func NewBlock(index int, payload string, previousNode string) *Block {
 		PreviousNode: previousNode,
 	}
 	block.Id = block.calculateHash()
+	fmt.Println("block Id: ", block.Id)
+
 	return block
+}
+
+func IsValidChain(blocks []*Block) bool {
+	for i := 1; i < len(blocks); i++ {
+        currentBlock := blocks[i]
+        previousBlock := blocks[i-1]
+
+        if currentBlock.PreviousNode != previousBlock.Id {
+            return false
+        }
+
+        if currentBlock.calculateHash() != currentBlock.Id {
+            return false
+        }
+    }
+    return true
 }
 
 func (b *Block) calculateHash() string {
 	record := string(b.Index) + string(b.Timestamp) + b.PreviousNode + string(b.Payload)
 	hash := sha256.New()
+	fmt.Println("block: ", b)
+
+	fmt.Println("record: ", record)
 	hash.Write([]byte(record))
 	return fmt.Sprintf("%x", hash.Sum(nil))
 }
