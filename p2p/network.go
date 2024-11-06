@@ -124,11 +124,19 @@ func ConnectToNetwork() *P2PNode {
         log.Fatal(err)
     }
 
+	nodeDHT, err := setupDHT(ctx, node.Host)
+	if err != nil {
+		fmt.Println("Error setting up DHT:", err)
+		return nil
+	}
+
     fmt.Printf("Node is listening on: %s/p2p/%s\n", listenAddrStr, node.Host.ID().String())
 
 	ConnectToSeedNodes(ctx, node)
 
-    return node
+	go discoverPeers(ctx, nodeDHT)
+
+	return node
 }
 
 func ConnectToSeedNodes(ctx context.Context, node *P2PNode) {
