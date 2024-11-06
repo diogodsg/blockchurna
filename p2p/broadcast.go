@@ -38,12 +38,11 @@ func BroadcastBlock(h host.Host, block *blockchain.Block) error {
 
 
 func StartBlockchain() {
-	// block := blockchain.BC.CreateBlock("new item")
 	Node = ConnectToNetwork() 
 	// BroadcastBlock(Node.Host, block)
-	// StartListening(Node.Host, blockchain.BC)
-	// SynchronizeChain(Node.Host, blockchain.BC)
-	// for _, block := range blockchain.BC.Blocks {
-	// 	fmt.Printf("Index: %d, Payload: %s, Hash: %s\n", block.Index, block.Payload, block.Id)
-	// }
+	StartListening(Node.Host, blockchain.BC)
+	SynchronizeChain(Node.Host, blockchain.BC)
+	for _, block := range blockchain.BC.Blocks {
+		fmt.Printf("Index: %d, Payload: %s, Hash: %s\n", block.Index, block.Payload, block.Id)
+	}
 }
