@@ -1,5 +1,7 @@
 package blockchain
 
+import "fmt"
+
 type Blockchain struct {
 	Blocks []*Block
 }
@@ -7,13 +9,26 @@ type Blockchain struct {
 var BC *Blockchain = NewBlockchain()
 
 func NewBlockchain() *Blockchain {
-	genesisBlock := NewBlock(0, "", "0")
-	return &Blockchain{Blocks: []*Block{genesisBlock}}
+	return &Blockchain{Blocks: []*Block{}}
 }
 
-func (bc *Blockchain) CreateBlock(payload string) *Block {
-	previousBlock := bc.Blocks[len(bc.Blocks) - 1]
-	newBlock := NewBlock(previousBlock.Index+1, payload, previousBlock.Id)
+func (bc *Blockchain) CreateBlock(payload Payload) *Block {
+	previousNode := ""
+	index := 0
+
+	if len(bc.Blocks) > 0 {
+		previousBlock :=  bc.Blocks[len(bc.Blocks) - 1]
+		previousNode = previousBlock.Id
+		index = previousBlock.Index + 1 
+	} 
+	err := ValidatePayload(payload)
+
+	if err != nil {
+		fmt.Println("Invalid Block")
+		return nil
+	}
+
+	newBlock := NewBlock(index, payload, previousNode)
 	bc.Blocks = append(bc.Blocks, newBlock)
 
 	return newBlock

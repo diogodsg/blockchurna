@@ -142,7 +142,7 @@ func ConnectToNetwork() *P2PNode {
 func ConnectToSeedNodes(ctx context.Context, node *P2PNode) {
 	file, err := os.Open("seed_nodes")
 	if err != nil {
-		log.Printf("Error opening the file:", err)
+		log.Println("Error opening the file:", err)
 		return
 	}
 	defer file.Close() 

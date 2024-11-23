@@ -16,6 +16,8 @@ func main() {
 	server.GET("/blocks", api.GetBlocks)
 	server.POST("/blocks", api.AddBlock)
 	server.POST("/sync", api.Synchronize)
+	server.POST("/validate", api.ValidateBlock)
+
 
 	listenPort := ":" + os.Args[1] + "0"
 
