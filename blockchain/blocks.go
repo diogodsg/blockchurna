@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"strings"
@@ -24,6 +25,10 @@ type Block struct {
 type Payload struct {
 	Presences 	[]Presence	`json:"presences"`
 	Votes 		[]Vote     	`json:"votes"`
+	City		string		`json:"city"`
+	State		string		`json:"state"`
+	Session		string		`json:"session"`
+	Zone		string		`json:"zone"`
 	Signature 	string		`json:"signature"`
 }
 
@@ -91,27 +96,41 @@ func SerializePayload(payload *Payload) (string, error) {
 	}
 	return string(data), nil}
 
+func isDuplicated(zone string, session string) bool {
+	for _, block := range BC.Blocks {
+		if block.Payload.Zone == zone && block.Payload.Session == session {
+			return true
+		}
+	}
+
+	return false
+}
+
 func ValidatePayload(payload Payload) error {
+	dup := isDuplicated(payload.Zone, payload.Session)
+
+	if dup {
+		return errors.New("bloco duplicado")
+	}
+
 	for _, presence := range payload.Presences {
 		key, err := LoadKeyFromJSON(presence.UserId)
 		if err != nil {
-			fmt.Printf("Error loading keys: %v\n", err)
-			return err
+			return fmt.Errorf("erro ao carregar a chave: %v", err)
 		}
 
 		err = validatePresence(presence, key)
 
 		if err != nil {
-			fmt.Printf("Invalid Signature for Presence %s: %v\n", presence.UserId, err)
-			return err
+			return fmt.Errorf("assinatura inválida para a presença %s: %v", presence.UserId, err)
+
 		}
 		fmt.Printf("Valid Signature for Presence %s\n", presence.UserId)
 	}
 	key, err := LoadKeyFromJSON("ballot")
 	
 	if err != nil {
-		fmt.Printf("Error loading keys: %v\n", err)
-		return err
+		return fmt.Errorf("erro ao carregar a chave da urna: %v", err)
 	}
 	data, err := SerializePayload(&payload)
 	if err != nil {

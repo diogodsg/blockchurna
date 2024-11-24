@@ -12,7 +12,7 @@ func NewBlockchain() *Blockchain {
 	return &Blockchain{Blocks: []*Block{}}
 }
 
-func (bc *Blockchain) CreateBlock(payload Payload) *Block {
+func (bc *Blockchain) CreateBlock(payload Payload) (*Block, error) {
 	previousNode := ""
 	index := 0
 
@@ -24,14 +24,13 @@ func (bc *Blockchain) CreateBlock(payload Payload) *Block {
 	err := ValidatePayload(payload)
 
 	if err != nil {
-		fmt.Println("Invalid Block")
-		return nil
+		
+		return nil, fmt.Errorf("bloco inválido: %v", err)
 	}
 
 	newBlock := NewBlock(index, payload, previousNode)
 	bc.Blocks = append(bc.Blocks, newBlock)
-
-	return newBlock
+	return newBlock, nil
 }
 
 func (bc *Blockchain) AddBlock(block *Block) *Block {
