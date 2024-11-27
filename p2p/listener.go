@@ -68,7 +68,6 @@ func HandleMessageLatestBlock(stream network.Stream, msg *Message, bc *blockchai
 		stream.Reset()
 		return err
 	}
-	fmt.Println(block)
 
 	bc.AddBlock(block)
 

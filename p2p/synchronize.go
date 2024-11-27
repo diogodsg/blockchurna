@@ -16,9 +16,8 @@ func SynchronizeChain(h host.Host, bc *blockchain.Blockchain) error {
 	fmt.Println(h.Network().Peers())
 	for _, peer := range h.Network().Peers() {
 		fmt.Println("Requesting block from " + peer.String())
-		latestLocalBlock := bc.GetLatestBlock()
 
-		err := requestMissingBlocks(h, peer, latestLocalBlock.Index)
+		err := requestMissingBlocks(h, peer)
 		if err != nil {
 			return fmt.Errorf("failed to synchronize missing blocks: %v", err)
 		}
@@ -27,7 +26,7 @@ func SynchronizeChain(h host.Host, bc *blockchain.Blockchain) error {
 	return nil
 }
 
-func requestMissingBlocks(h host.Host, peer peer.ID, fromIndex int) error {
+func requestMissingBlocks(h host.Host, peer peer.ID) error {
 	fmt.Println("requesting missing blocks")
 	fmt.Println(peer)
 
@@ -38,7 +37,6 @@ func requestMissingBlocks(h host.Host, peer peer.ID, fromIndex int) error {
 
 	err = json.NewEncoder(stream).Encode(Message{
 		Type:    MessageRequestBlockchain,
-		Payload: fromIndex,
 	})
 	if err != nil {
 		return fmt.Errorf("failed to send missing blocks request: %v", err)

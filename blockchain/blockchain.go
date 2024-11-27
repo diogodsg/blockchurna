@@ -35,9 +35,11 @@ func (bc *Blockchain) CreateBlock(payload Payload) (*Block, error) {
 
 func (bc *Blockchain) AddBlock(block *Block) *Block {
 	latestBlock := bc.GetLatestBlock()
-	if block.Index <= latestBlock.Index {
+
+	if latestBlock != nil && block.Index <= latestBlock.Index {
 		return block
 	}
+
 	bc.Blocks = append(bc.Blocks, block)
 
 	return block
@@ -49,6 +51,9 @@ func (bc *Blockchain) ReplaceBlockchain(blocks []*Block) []*Block {
 }
 
 func (bc *Blockchain) GetLatestBlock() *Block {
+	if len(bc.Blocks) == 0 {
+		return nil;
+	}
 	return bc.Blocks[len(bc.Blocks) - 1]
 }
 

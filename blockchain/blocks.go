@@ -140,7 +140,6 @@ func ValidatePayload(payload Payload) error {
 
 	blockData := strings.ReplaceAll(data, ",\"signature\":\"\"", "")
 
-	fmt.Println(blockData)
 
 	valid, err := verifySignature(key, blockData, payload.Signature)
 
