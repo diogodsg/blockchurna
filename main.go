@@ -20,6 +20,7 @@ func main() {
 	
 	server.GET("/blocks", api.GetBlocks)
 	server.POST("/blocks", api.AddBlock)
+	server.POST("/verify-vote", api.VerifyVote)
 	server.POST("/upload-file-block", api.AddBlockFile)
 	server.POST("/sync", api.Synchronize)
 	server.POST("/validate", api.ValidateBlock)

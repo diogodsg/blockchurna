@@ -11,7 +11,32 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type VerifyVoteDto struct {
+	VoterId     string  `json:"voter_id"`
+	TsePin      string  `json:"tse_pin"`
+	UserPin    	string   `json:"user_pin"`
+}
 
+func VerifyVote(c *gin.Context) {
+	var verifyVoteDto VerifyVoteDto
+	err := c.ShouldBindJSON(&verifyVoteDto)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "could not parse data"})
+		return
+	}
+
+	vote, err := blockchain.BC.VerifyVote(verifyVoteDto.VoterId, verifyVoteDto.UserPin, verifyVoteDto.TsePin)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid combination of keys"})
+		return
+	}
+	
+	c.JSON(200, gin.H{
+		"vote": vote,
+	})
+}
 
 func GetBlocks(c *gin.Context) {
 	data := blockchain.BC.AggregateVotes()

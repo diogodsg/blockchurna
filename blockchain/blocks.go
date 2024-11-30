@@ -27,7 +27,7 @@ type Payload struct {
 	Votes 		[]Vote     	`json:"votes"`
 	City		string		`json:"city"`
 	State		string		`json:"state"`
-	Session		string		`json:"session"`
+	Section		string		`json:"section"`
 	Zone		string		`json:"zone"`
 	Signature 	string		`json:"signature"`
 }
@@ -96,9 +96,9 @@ func SerializePayload(payload *Payload) (string, error) {
 	}
 	return string(data), nil}
 
-func isDuplicated(zone string, session string) bool {
+func isDuplicated(zone string, section string) bool {
 	for _, block := range BC.Blocks {
-		if block.Payload.Zone == zone && block.Payload.Session == session {
+		if block.Payload.Zone == zone && block.Payload.Section == section {
 			return true
 		}
 	}
@@ -107,7 +107,7 @@ func isDuplicated(zone string, session string) bool {
 }
 
 func ValidatePayload(payload Payload) error {
-	dup := isDuplicated(payload.Zone, payload.Session)
+	dup := isDuplicated(payload.Zone, payload.Section)
 
 	if dup {
 		return errors.New("bloco duplicado")
