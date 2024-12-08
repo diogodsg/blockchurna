@@ -4,6 +4,7 @@ import (
 	"blockchurna/api"
 	"blockchurna/p2p"
 	"os"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -14,9 +15,15 @@ func main() {
 
 	server := gin.Default()
 
-	corsConfig := cors.DefaultConfig()
-	corsConfig.AllowAllOrigins = true
-	server.Use(cors.New(corsConfig))
+
+	server.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5000", "http://blockchurna.tech"}, // Allowed origins
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 	
 	server.GET("/blocks", api.GetBlocks)
 	server.POST("/blocks", api.AddBlock)
