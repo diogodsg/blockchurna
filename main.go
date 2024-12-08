@@ -17,7 +17,7 @@ func main() {
 	
 
 	server.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5000", "http://blockchurna.tech"}, // Allowed origins
+		AllowOrigins:     []string{"*"}, // Allowed origins
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 	}))
 	
