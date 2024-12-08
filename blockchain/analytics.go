@@ -12,6 +12,7 @@ type AggregatedData struct {
 	City  string          `json:"city"`
 	State string          `json:"state"`
 	Votes []CandidateVote `json:"votes"`
+	Section string 		  `json:"section"`
 }
 
 type CandidateVote struct {
@@ -25,7 +26,8 @@ func (bc *Blockchain) AggregateVotes() []*AggregatedData {
 	for _, block := range bc.Blocks {
 		city := block.Payload.City
 		state := block.Payload.State
-		key := fmt.Sprintf("%s|%s", city, state)
+		section := block.Payload.Section + " - " + block.Payload.Zone
+		key := fmt.Sprintf("%s|%s|%s", city, state, section)
 
 		if _, exists := aggregationMap[key]; !exists {
 			aggregationMap[key] = make(map[string]int)
@@ -41,6 +43,7 @@ func (bc *Blockchain) AggregateVotes() []*AggregatedData {
 		parts := strings.Split(key, "|")
 		city := parts[0]
 		state := parts[1]
+		section := parts[2]
 
 		var votes []CandidateVote
 		for candidate, count := range candidateMap {
@@ -54,6 +57,7 @@ func (bc *Blockchain) AggregateVotes() []*AggregatedData {
 			City:  city,
 			State: state,
 			Votes: votes,
+			Section: section,
 		})
 	}
 
