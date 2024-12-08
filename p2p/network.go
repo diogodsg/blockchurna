@@ -1,11 +1,9 @@
 package p2p
 
 import (
-	"bufio"
 	"context"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p/core/host"
@@ -106,12 +104,12 @@ func (node *P2PNode) ListenMessages(ctx context.Context, handler func([]byte)) e
 
 func ConnectToNetwork() *P2PNode {
 	ctx := context.Background()
-    if len(os.Args) < 2 {
-        fmt.Println("Usage: go run main.go <port> [<peer-multiaddr>]")
-        return nil
-    }
+    // if len(os.Args) < 2 {
+    //     fmt.Println("Usage: go run main.go <port> [<peer-multiaddr>]")
+    //     return nil
+    // }
 
-    listenPort := os.Args[1]
+    listenPort := "4001"
 
     listenAddrStr := fmt.Sprintf("/ip4/0.0.0.0/tcp/%s", listenPort)
     listenAddr, err := multiaddr.NewMultiaddr(listenAddrStr)
@@ -140,17 +138,17 @@ func ConnectToNetwork() *P2PNode {
 }
 
 func ConnectToSeedNodes(ctx context.Context, node *P2PNode) {
-	file, err := os.Open("seed_nodes")
-	if err != nil {
-		log.Println("Error opening the file:", err)
-		return
-	}
-	defer file.Close() 
+	// file, err := os.Open("seed_nodes")
+	// if err != nil {
+	// 	log.Println("Error opening the file:", err)
+	// 	return
+	// }
+	// defer file.Close() 
 
-	scanner := bufio.NewScanner(file)
-
-	for scanner.Scan() {
-		peerAddr := scanner.Text() 
+	// scanner := bufio.NewScanner(file)
+	seedNodes := [1]string{"/ip4/18.117.134.238/tcp/4001/p2p/12D3KooWJT2y4F9xVvkeAusEtCkPMToRbmyLagw2kWdwAb2SbJmK"}
+	for _, seedNode := range seedNodes {
+		peerAddr := seedNode
 		log.Printf("Connecting to peer: (%s)\n", peerAddr)
 
         if err := node.ConnectToPeer(ctx, peerAddr); err != nil {
@@ -161,9 +159,9 @@ func ConnectToSeedNodes(ctx context.Context, node *P2PNode) {
         log.Printf("Successfully connected to peer: %s\n", peerAddr)
 	}
 
-	if err := scanner.Err(); err != nil {
-		log.Printf("Error reading lines: %v", err)
-	}
+	// if err := scanner.Err(); err != nil {
+	// 	log.Printf("Error reading lines: %v", err)
+	// }
 }
 
 

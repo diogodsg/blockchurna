@@ -3,7 +3,6 @@ package main
 import (
 	"blockchurna/api"
 	"blockchurna/p2p"
-	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -18,19 +17,18 @@ func main() {
 	corsConfig.AllowAllOrigins = true
 	server.Use(cors.New(corsConfig))
 	
-	server.GET("/blocks", api.GetBlocks)
-	server.POST("/blocks", api.AddBlock)
-	server.POST("/verify-vote", api.VerifyVote)
-	server.POST("/upload-file-block", api.AddBlockFile)
-	server.POST("/sync", api.Synchronize)
-	server.POST("/validate", api.ValidateBlock)
+	server.GET("/core/v1/blocks", api.GetBlocks)
+	server.POST("/core/v1/blocks", api.AddBlock)
+	server.POST("/core/v1/verify-vote", api.VerifyVote)
+	server.POST("/core/v1/upload-file-block", api.AddBlockFile)
+	server.POST("/core/v1/sync", api.Synchronize)
+	server.POST("/core/v1/validate", api.ValidateBlock)
 	
 
-	listenPort := ":" + os.Args[1] + "0"
+	listenPort := ":" + "40010"
 
 
 	server.Run(listenPort) 
-
 }
 
 
