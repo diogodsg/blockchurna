@@ -14,12 +14,9 @@ func main() {
 
 	server := gin.Default()
 
-	
-
-	server.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // Allowed origins
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-	}))
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowAllOrigins = true
+	server.Use(cors.New(corsConfig))
 	
 	server.GET("/blocks", api.GetBlocks)
 	server.POST("/blocks", api.AddBlock)
