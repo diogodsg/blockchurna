@@ -48,7 +48,6 @@ func DecodeMessage(stream network.Stream) (*Message, error) {
 		fmt.Println("Error reading raw message:", err)
 		return nil, err
 	}
-	fmt.Println("Raw JSON received:", string(rawMessage))
 
 	var msg Message
 	if err := json.Unmarshal(rawMessage, &msg); err != nil {
@@ -114,9 +113,9 @@ func HandleMessageRequestBlockchain(h host.Host, stream network.Stream, msg *Mes
 }
 
 func HandleMessageSyncronize(msg *Message, bc *blockchain.Blockchain) error {
-	fmt.Println("Receiving blocks to sync")
 	var receivedBlocks []*blockchain.Block
 	err := mapstructure.Decode(msg.Payload, &receivedBlocks)
+	fmt.Printf("Received a blockchain with %v blocks.\n", len(receivedBlocks))
 	if err != nil {
 		return fmt.Errorf("failed to decode received blocks: %v", err)
 	}

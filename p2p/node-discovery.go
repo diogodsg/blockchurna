@@ -36,10 +36,9 @@ func discoverPeers(ctx context.Context, dht *dht.IpfsDHT) {
 			time.Sleep(5 * time.Second) 
 			continue
 		}
-		fmt.Println("First node successfully advertised in the network")
 		break
 	}
-	fmt.Println("Node advertised in the network")
+	fmt.Println("Successfully entered the network")
 
 	// Find other peers in the network
 	peerChan, err := routingDiscovery.FindPeers(ctx, "p2p-discovery")
